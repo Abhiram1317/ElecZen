@@ -18,6 +18,14 @@ body {
 body.light { background: #e8faff; color: #002029; }
 
 #app { display: flex; height: 100%; }
+.page.light {
+    color: #001f2a;
+}
+
+.card.light {
+    background: rgba(0, 150, 150, 0.1);
+}
+
 
 nav {
   width: 260px;
@@ -248,9 +256,30 @@ function showPage(page) {
 }
 
 // Theme toggle
+const themeToggle = document.getElementById("themeToggle");
+
+// Working theme toggle
 themeToggle.onclick = () => {
-  document.body.classList.toggle("light");
+    document.body.classList.toggle("light");
+    document.querySelector("nav").classList.toggle("light");
+    document.querySelector("main").classList.toggle("light");
+
+    // Save theme preference
+    if (document.body.classList.contains("light")) {
+        localStorage.setItem("theme_mode", "light");
+    } else {
+        localStorage.removeItem("theme_mode");
+    }
 };
+
+// Apply saved theme on load
+if (localStorage.getItem("theme_mode") === "light") {
+    document.body.classList.add("light");
+    document.querySelector("nav").classList.add("light");
+    document.querySelector("main").classList.add("light");
+};
+
+
 
 // EV Tips
 const tips = [

@@ -6,6 +6,44 @@
 <title>ElecZen — EV Charging App</title>
 
 <style>
+/* -----------------------------------
+   🔥 ANIMATED LOADING SCREEN
+----------------------------------- */
+#loadingScreen {
+  position: fixed;
+  inset: 0;
+  background: #000814;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  flex-direction: column;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 2s;
+}
+
+.loaderRing {
+  width: 80px;
+  height: 80px;
+  border: 6px solid #00ffe0;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  box-shadow: 0 0 20px #00ffe0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* -----------------------------------
+   MAIN UI STYLES (unchanged)
+----------------------------------- */
 body {
   margin: 0;
   background: #0c0c1a;
@@ -59,11 +97,7 @@ nav a:hover {
 }
 
 /* Main area */
-main {
-  flex: 1;
-  overflow: auto;
-  padding: 30px;
-}
+main { flex: 1; overflow: auto; padding: 30px; }
 
 /* Cards */
 .card {
@@ -114,6 +148,13 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 </head>
 
 <body>
+
+<!-- 🔥 LOADING SCREEN -->
+<div id="loadingScreen">
+  <div class="loaderRing"></div>
+  <p style="margin-top:15px;font-size:18px;">Loading ElecZen...</p>
+</div>
+
 <div id="app">
 
 <!-- SIDEBAR -->
@@ -262,6 +303,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 </div>
 
 <script>
+/* Remove Loading Screen after fade-out */
+setTimeout(() => {
+  document.getElementById("loadingScreen").style.display = "none";
+}, 3000);
+
 /* PAGE SYSTEM */
 const pages = document.querySelectorAll(".page");
 const menu = document.querySelectorAll("nav a");
@@ -436,6 +482,8 @@ locBtn.onclick = () => {
 
 </body>
 </html>
+
+
 
 
 

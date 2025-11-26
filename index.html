@@ -19,10 +19,7 @@ body.light { background: #e8faff; color: #002029; }
 
 #app { display: flex; height: 100%; }
 
-.page.light { color: #001f2a; }
-.card.light { background: rgba(0, 150, 150, 0.1); }
-
-/* Sidebar Navigation */
+/* Sidebar */
 nav {
   width: 260px;
   background: #0b0b1f;
@@ -35,15 +32,15 @@ nav {
 }
 nav.light { background: #c6f7ff; }
 
-nav .logo img {
-  width: 55px;
-  border-radius: 12px;
-  box-shadow: 0 0 12px #00ffe0;
-}
 nav .logo {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+nav .logo img {
+  width: 55px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #00ffe0;
 }
 
 nav a {
@@ -61,7 +58,7 @@ nav a:hover {
   box-shadow: 0 0 12px #00ffe0;
 }
 
-/* Main content */
+/* Main area */
 main {
   flex: 1;
   overflow: auto;
@@ -82,9 +79,6 @@ main {
   box-shadow: 0 0 20px #00ffe0;
 }
 
-h2, h3 { color: #00ffe0; }
-
-/* Form elements */
 input, textarea, button, select {
   padding: 10px;
   width: 100%;
@@ -93,16 +87,8 @@ input, textarea, button, select {
   border: none;
   outline: none;
 }
-
-button {
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+button { cursor: pointer; font-weight: bold; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-primary {
   background: linear-gradient(90deg, #00ffe0, #00bfff);
@@ -110,7 +96,7 @@ button:disabled {
   box-shadow: 0 0 10px #00ffe0;
 }
 
-/* Feedback Box */
+/* Feedback items */
 .feedback-item {
   background: rgba(255,255,255,0.05);
   padding: 10px;
@@ -118,11 +104,11 @@ button:disabled {
   margin: 5px 0;
 }
 
-/* Mobile layout */
-@media(max-width: 768px) {
+/* Mobile support */
+@media(max-width: 768px){
   #app { flex-direction: column; }
   nav { width: 100%; flex-direction: row; overflow-x: auto; }
-  nav a { flex: 1; text-align: center; padding: 8px; }
+  nav a { flex: 1; text-align:center; padding:10px; }
 }
 </style>
 </head>
@@ -150,7 +136,7 @@ button:disabled {
 
 <main>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <section id="home" class="page">
   <div class="card">
     <h2>Welcome to ElecZen</h2>
@@ -172,6 +158,14 @@ button:disabled {
     <h3>Daily EV Tip</h3>
     <p id="tipText">Loading...</p>
   </div>
+
+  <!-- CURRENT LOCATION -->
+  <div class="card">
+    <h3>Your Current Location</h3>
+    <button class="btn-primary" id="locBtn">Get Current Location</button>
+    <p id="locStatus"></p>
+    <p id="locAddress"></p>
+  </div>
 </section>
 
 <!-- REGISTER -->
@@ -179,13 +173,13 @@ button:disabled {
   <div class="card">
     <h2>Create Account</h2>
     <form id="regForm">
-      <input name="name" placeholder="Full Name" required />
-      <input name="email" type="email" placeholder="Email" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <input name="vehicle" placeholder="Vehicle Model" required />
+      <input name="name" placeholder="Full Name" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <input name="vehicle" placeholder="Vehicle Model" required>
       <button class="btn-primary">Register</button>
     </form>
-    <div id="regMsg"></div>
+    <p id="regMsg"></p>
   </div>
 </section>
 
@@ -200,7 +194,7 @@ button:disabled {
   </div>
 </section>
 
-<!-- ACCOUNT PAGE -->
+<!-- ACCOUNT -->
 <section id="account" class="page" style="display:none">
   <div class="card">
     <h2>My Account</h2>
@@ -217,22 +211,20 @@ button:disabled {
   </div>
 </section>
 
-<!-- PAYMENTS PAGE -->
+<!-- PAYMENTS -->
 <section id="payments" class="page" style="display:none">
   <div class="card">
     <h2>Payments</h2>
-    <p>Select a payment method to complete your charging request.</p>
 
     <select id="payMethod">
       <option value="UPI">UPI</option>
-      <option value="Card">Credit / Debit Card</option>
+      <option value="Card">Card</option>
       <option value="Wallet">Wallet</option>
-      <option value="COD">Cash on Delivery</option>
-      <option value="Subscription">Monthly Subscription</option>
+      <option value="COD">Cash</option>
+      <option value="Subscription">Subscription</option>
     </select>
 
-    <input id="payAmount" type="number" placeholder="Enter Amount (₹)" />
-
+    <input id="payAmount" type="number" placeholder="Enter amount (₹)">
     <button class="btn-primary" id="payBtn">Pay Now</button>
     <p id="payMsg"></p>
   </div>
@@ -243,7 +235,7 @@ button:disabled {
   </div>
 </section>
 
-<!-- BOOKING HISTORY -->
+<!-- HISTORY -->
 <section id="history" class="page" style="display:none">
   <div class="card">
     <h2>Booking History</h2>
@@ -255,7 +247,7 @@ button:disabled {
 <section id="feedback" class="page" style="display:none">
   <div class="card">
     <h2>Feedback</h2>
-    <textarea id="fbText" rows="4" placeholder="Type feedback..."></textarea>
+    <textarea id="fbText" rows="3" placeholder="Write your feedback..."></textarea>
     <button class="btn-primary" id="fbSubmit">Submit</button>
     <p id="fbMsg"></p>
   </div>
@@ -273,10 +265,9 @@ button:disabled {
 /* PAGE SYSTEM */
 const pages = document.querySelectorAll(".page");
 const menu = document.querySelectorAll("nav a");
-
 menu.forEach(a => a.onclick = () => show(a.dataset.page));
 
-function show(page) {
+function show(page){
   pages.forEach(p => p.style.display = p.id === page ? "" : "none");
   menu.forEach(a => a.classList.toggle("active", a.dataset.page === page));
 }
@@ -286,7 +277,7 @@ themeToggle.onclick = () => document.body.classList.toggle("light");
 
 /* EV TIPS */
 const tips = [
-  "Charge between 20–80% for battery life.",
+  "Charge between 20–80% for battery health.",
   "Avoid fast-charging daily.",
   "Park in shade while charging.",
 ];
@@ -304,7 +295,7 @@ regForm.onsubmit = e => {
     vehicle: regForm.vehicle.value
   };
   localStorage.setItem("user", JSON.stringify(u));
-  regMsg.textContent = "Registered! Login now.";
+  regMsg.textContent = "Registered! Please login.";
   show("login");
 };
 
@@ -315,38 +306,38 @@ loginBtn.onclick = () => {
     return loginMsg.textContent = "Invalid Credentials!";
 
   localStorage.setItem("logged", "yes");
-  loginMsg.textContent = "Success!";
+  loginMsg.textContent = "Login Successful!";
   enableAccount();
-  setTimeout(() => show("account"), 800);
+  setTimeout(() => show("account"), 700);
 };
 
-/* ACCOUNT SYSTEM */
-function enableAccount() {
+/* ACCOUNT FUNCTIONS */
+function enableAccount(){
   reqCharge.disabled = false;
   logoutBtn.disabled = false;
   loadAcc();
 }
-function disableAccount() {
+function disableAccount(){
   reqCharge.disabled = true;
   logoutBtn.disabled = true;
+  acctInfo.textContent = "Please login first";
 }
 
-function loadAcc() {
+function loadAcc(){
   let u = JSON.parse(localStorage.getItem("user"));
   acctInfo.innerHTML = `
     <b>Name:</b> ${u.name}<br>
     <b>Email:</b> ${u.email}<br>
     <b>Vehicle:</b> ${u.vehicle}
   `;
-  pointsCount.textContent = localStorage.getItem("points") || 0;
 }
 
 /* CHARGING REQUEST */
 reqCharge.onclick = () => {
-  let history = JSON.parse(localStorage.getItem("bookings") || "[]");
-  history.push({ time: new Date().toLocaleString() });
-  localStorage.setItem("bookings", JSON.stringify(history));
-  reqMsg.textContent = "Request Sent!";
+  let h = JSON.parse(localStorage.getItem("bookings") || "[]");
+  h.push({ time: new Date().toLocaleString() });
+  localStorage.setItem("bookings", JSON.stringify(h));
+  reqMsg.textContent = "Charging Request Submitted!";
   loadHistory();
 };
 
@@ -354,38 +345,26 @@ reqCharge.onclick = () => {
 payBtn.onclick = () => {
   let method = payMethod.value;
   let amount = Number(payAmount.value);
+  if(amount <= 0) return payMsg.textContent = "Enter a valid amount.";
 
-  if (amount <= 0)
-    return payMsg.textContent = "Enter a valid amount.";
+  let ph = JSON.parse(localStorage.getItem("payments") || "[]");
+  ph.push({ method, amount, time: new Date().toLocaleString() });
 
-  let payments = JSON.parse(localStorage.getItem("payments") || "[]");
-  payments.push({
-    method,
-    amount,
-    time: new Date().toLocaleString()
-  });
-
-  localStorage.setItem("payments", JSON.stringify(payments));
-
+  localStorage.setItem("payments", JSON.stringify(ph));
   payMsg.textContent = "Payment Successful!";
   loadPayHistory();
 };
 
-function loadPayHistory() {
-  let payments = JSON.parse(localStorage.getItem("payments") || "[]");
-  payHistory.innerHTML = payments
-    .map(p => `
-      <div class="feedback-item">
-        ₹${p.amount} — ${p.method}<br>
-        <small>${p.time}</small>
-      </div>
-    `)
-    .join("");
+function loadPayHistory(){
+  let ph = JSON.parse(localStorage.getItem("payments") || "[]");
+  payHistory.innerHTML = ph.map(p =>
+    `<div class="feedback-item">₹${p.amount} — ${p.method}<br><small>${p.time}</small></div>`
+  ).join("");
 }
 loadPayHistory();
 
 /* HISTORY */
-function loadHistory() {
+function loadHistory(){
   let h = JSON.parse(localStorage.getItem("bookings") || "[]");
   historyList.innerHTML = h.map(i =>
     `<div class="feedback-item">Requested at: ${i.time}</div>`
@@ -403,16 +382,16 @@ logoutBtn.onclick = () => {
 /* FEEDBACK */
 fbSubmit.onclick = () => {
   let t = fbText.value.trim();
-  if (t.length < 3) return fbMsg.textContent = "Too short!";
+  if(t.length < 3) return fbMsg.textContent = "Too short!";
   let f = JSON.parse(localStorage.getItem("feedback") || "[]");
-  f.push({ text: t, time: new Date().toLocaleString() });
+  f.push({ text:t, time:new Date().toLocaleString() });
   localStorage.setItem("feedback", JSON.stringify(f));
   fbMsg.textContent = "Submitted!";
   fbText.value = "";
   loadFeedback();
 };
 
-function loadFeedback() {
+function loadFeedback(){
   let f = JSON.parse(localStorage.getItem("feedback") || "[]");
   fbList.innerHTML = f.map(x =>
     `<div class="feedback-item"><b>${x.time}</b><br>${x.text}</div>`
@@ -420,13 +399,45 @@ function loadFeedback() {
 }
 loadFeedback();
 
-/* AUTO LOGIN */
-if (localStorage.getItem("logged") === "yes") enableAccount();
+/* AUTO-LOGIN */
+if(localStorage.getItem("logged")==="yes") enableAccount();
 else disableAccount();
+
+/* CURRENT LOCATION */
+locBtn.onclick = () => {
+  locStatus.textContent = "Fetching location...";
+  locAddress.textContent = "";
+
+  if(!navigator.geolocation){
+    locStatus.textContent = "Geolocation unavailable!";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async pos => {
+    let lat = pos.coords.latitude;
+    let lon = pos.coords.longitude;
+
+    locStatus.innerHTML = `
+      <b>Latitude:</b> ${lat}<br>
+      <b>Longitude:</b> ${lon}
+    `;
+
+    try{
+      let r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+      let d = await r.json();
+      locAddress.innerHTML = `<b>Address:</b> ${d.display_name}`;
+    } catch {
+      locAddress.textContent = "Unable to fetch address.";
+    }
+
+  }, () => locStatus.textContent = "Enable GPS permission.");
+};
 </script>
 
 </body>
 </html>
+
+
 
 
 

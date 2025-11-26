@@ -3,467 +3,335 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ElecZen — EV Charging App</title>
+<title>ElecZen</title>
 
 <style>
-body {
-  margin: 0;
-  background: #0c0c1a;
-  color: #e0f7ff;
-  font-family: 'Inter', sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  transition: 0.3s;
-}
-body.light { background: #e8faff; color: #002029; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        transition: 0.3s;
+    }
 
-#app { display: flex; height: 100%; }
-.page.light { color: #001f2a; }
-.card.light { background: rgba(0, 150, 150, 0.1); }
+    /* Dark Mode */
+    body.dark {
+        background: #111;
+        color: white;
+    }
 
-nav {
-  width: 260px;
-  background: #0b0b1f;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  box-shadow: 0 0 20px #00ffe5 inset;
-  transition: 0.3s;
-  z-index: 10;
-}
-nav.light { background: #c6f7ff; }
+    /* Header */
+    header {
+        background: #4A90E2;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 20px;
+    }
 
-nav .logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-nav .logo img {
-  width: 55px;
-  height: 55px;
-  border-radius: 12px;
-  box-shadow: 0 0 12px #00ffe0;
-}
+    /* Mobile Menu */
+    #menuBtn {
+        font-size: 26px;
+        cursor: pointer;
+    }
 
-nav a {
-  color: #e0f7ff;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-nav a.active,
-nav a:hover {
-  background: #00ffe0;
-  color: #001f2a;
-  box-shadow: 0 0 12px #00ffe0;
-}
+    /* Sidebar */
+    #sidebar {
+        width: 250px;
+        background: #222;
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        padding-top: 60px;
+        transition: 0.3s;
+        z-index: 10;
+    }
 
-main {
-  flex: 1;
-  overflow: auto;
-  padding: 30px;
-  background: #0c0c1a;
-  transition: 0.3s;
-}
-main.light { background: #f0fcff; }
+    #sidebar a {
+        display: block;
+        padding: 15px;
+        color: white;
+        text-decoration: none;
+        border-bottom: 1px solid #444;
+    }
 
-.card {
-  background: rgba(0,255,224,0.06);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 22px;
-  box-shadow: 0 0 10px #00ffe0;
-  transition: 0.3s;
-}
-.card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 20px #00ffe0;
-}
+    #sidebar a:hover {
+        background: #333;
+    }
 
-h2, h3, h4 { color: #00ffe0; }
+    /* Container */
+    .page {
+        padding: 20px;
+        display: none;
+    }
 
-input, textarea, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  width: 100%;
-  margin-top: 8px;
-  transition: 0.3s;
-}
+    /* Inputs */
+    input, select, textarea, button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #888;
+        margin-top: 10px;
+    }
 
-button {
-  cursor: pointer;
-  font-weight: 700;
-}
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    button {
+        background: #4A90E2;
+        color: white;
+        border: none;
+        font-size: 16px;
+    }
 
-.btn-primary {
-  background: linear-gradient(90deg, #00ffe0, #00bfff);
-  color: #001f2a;
-  box-shadow: 0 0 10px #00ffe0;
-}
+    button:disabled {
+        background: gray;
+    }
 
-.feedback-item {
-  padding: 10px;
-  margin: 5px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  position: relative;
-}
+    /* Popup Notification */
+    #popup {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        background: #4A90E2;
+        color: white;
+        padding: 15px;
+        border-radius: 6px;
+        opacity: 0;
+        transition: 0.4s;
+    }
 
-/* -------------------------------
-   📱 MOBILE RESPONSIVE STYLING
---------------------------------*/
-@media (max-width: 900px) {
+    /* Payment Card */
+    .payment-card {
+        padding: 15px;
+        border-radius: 8px;
+        background: #f1f1f1;
+        margin-top: 10px;
+    }
 
-  /* App becomes vertical */
-  #app {
-    flex-direction: column;
-  }
+    body.dark .payment-card {
+        background: #222;
+    }
 
-  /* Hide sidebar by default */
-  nav {
-    position: absolute;
-    left: -270px;
-    top: 0;
-    height: 100%;
-    transition: 0.4s;
-  }
-
-  /* When open */
-  nav.open {
-    left: 0;
-  }
-
-  /* Hamburger button */
-  #menuBtn {
-    display: block;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    background: #00ffe0;
-    padding: 10px 13px;
-    border-radius: 8px;
-    z-index: 20;
-    box-shadow: 0 0 10px #00ffe0;
-    font-size: 22px;
-    border: none;
-  }
-
-  /* Push main content down */
-  main {
-    padding-top: 70px;
-  }
-}
-
-/* Desktop hide hamburger */
-#menuBtn {
-  display: none;
-}
 </style>
 </head>
-
 <body>
 
-<!-- MOBILE MENU BUTTON -->
-<button id="menuBtn">☰</button>
+<header>
+    <strong>⚡ ElecZen</strong>
+    <span id="menuBtn">☰</span>
+</header>
 
-<div id="app">
+<!-- Sidebar -->
+<div id="sidebar">
+    <a onclick="openPage('home')">🏠 Home</a>
+    <a onclick="openPage('account')">👤 Account</a>
+    <a onclick="openPage('feedback')">✉ Feedback</a>
+    <a onclick="openPage('payment')">💳 Payments</a>
+    <a onclick="toggleTheme()">🌗 Theme</a>
+    <a onclick="logout()">🚪 Logout</a>
+</div>
 
-<!-- SIDEBAR -->
-<nav id="sideMenu">
-  <div class="logo">
-    <img src="ElecZen.jpg">
-    <span style="font-size:20px;font-weight:700;">ElecZen</span>
-  </div>
+<!-- Popup -->
+<div id="popup"></div>
 
-  <button id="themeToggle" class="btn-primary">Toggle Theme</button>
+<!-- Home -->
+<div id="home" class="page">
+    <h2>Welcome to ElecZen ⚡</h2>
+    <p>The future of EV charging at your fingertips.</p>
 
-  <a data-page="home" class="active">🏠 Home</a>
-  <a data-page="register">📝 Register</a>
-  <a data-page="login">🔐 Login</a>
-  <a data-page="account">👤 Account</a>
-  <a data-page="history">📘 Booking History</a>
-  <a data-page="feedback">💬 Feedback</a>
-</nav>
-
-<main>
-
-
-<!-- HOME -->
-<section id="home" class="page">
-  <div class="card">
-    <h2>Welcome to ElecZen</h2>
-    <p>The fastest mobile EV charging service in Hyderabad.</p>
-  </div>
-
-  <div class="card">
     <h3>About Us</h3>
-    <p>ElecZen is Hyderabad’s most advanced smart EV charging platform.</p>
+    <p>
+        ElecZen provides seamless EV charging management with 
+        an easy-to-use mobile interface. We combine innovation, speed,
+        and smart automation to deliver a smooth charging experience.
+        Track bookings, make payments, send feedback, and manage your
+        EV lifestyle — all in one place.
+    </p>
+
+    <h4>Why Choose ElecZen?</h4>
     <ul>
-      <li>⚡ 24/7 Rapid Mobile Charging</li>
-      <li>📍 Smart Location-Based Dispatch</li>
-      <li>🔐 Secure Cloud Accounts</li>
-      <li>📊 Points & Rewards System</li>
-      <li>🛠️ Instant Support & Service Tracking</li>
+        <li>Fast & Reliable Charging Management</li>
+        <li>Secure Payments</li>
+        <li>24/7 Support</li>
+        <li>User-friendly Interface</li>
+        <li>Developed for EV Owners</li>
     </ul>
-  </div>
+</div>
 
-  <div class="card">
-    <h3>Daily EV Tip</h3>
-    <p id="tipText">Loading...</p>
-  </div>
-</section>
+<!-- Account -->
+<div id="account" class="page">
+    <h2>Your Account</h2>
 
-<!-- REGISTER -->
-<section id="register" class="page" style="display:none">
-  <div class="card">
-    <h2>Create Account</h2>
-    <form id="regForm">
-      <input name="name" placeholder="Full Name" required />
-      <input name="email" type="email" placeholder="Email" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <input name="vehicle" placeholder="Vehicle Model" required />
-      <button class="btn-primary">Register</button>
-    </form>
-    <div id="regMsg"></div>
-  </div>
-</section>
+    <div id="accData"></div>
+</div>
 
-<!-- LOGIN -->
-<section id="login" class="page" style="display:none">
-  <div class="card">
-    <h2>Login</h2>
-    <input id="logEmail" placeholder="Email">
-    <input id="logPass" type="password" placeholder="Password">
-    <button class="btn-primary" id="loginBtn">Login</button>
-    <p id="loginMsg"></p>
-  </div>
-</section>
-
-<!-- ACCOUNT -->
-<section id="account" class="page" style="display:none">
-  <div class="card">
-    <h2>My Account</h2>
-    <div id="acctInfo">Please login first</div>
-
-    <h3>Profile Picture</h3>
-    <input type="file" id="profilePic" disabled />
-
-    <h3>Charging Request</h3>
-    <button class="btn-primary" id="reqCharge" disabled>Request Charging</button>
-    <p id="reqMsg"></p>
-
-    <h3>Reward Points</h3>
-    <p>Total: <span id="pointsCount">0</span></p>
-
-    <button class="btn-primary" id="logoutBtn" disabled>Logout</button>
-  </div>
-</section>
-
-<!-- HISTORY -->
-<section id="history" class="page" style="display:none">
-  <div class="card">
-    <h2>Booking History</h2>
-    <div id="historyList"></div>
-  </div>
-</section>
-
-<!-- FEEDBACK -->
-<section id="feedback" class="page" style="display:none">
-  <div class="card">
+<!-- Feedback -->
+<div id="feedback" class="page">
     <h2>Feedback</h2>
-    <textarea id="fbText" rows="4" placeholder="Write your feedback..."></textarea>
-    <button class="btn-primary" id="fbSubmit">Submit</button>
-    <div id="fbMsg"></div>
-  </div>
 
-  <div class="card">
+    <textarea id="fbText" placeholder="Write something..."></textarea>
+    <button onclick="saveFeedback()">Send</button>
+
     <h3>Previous Feedback</h3>
     <div id="fbList"></div>
-  </div>
-</section>
+</div>
 
-</main>
+<!-- Payments Page -->
+<div id="payment" class="page">
+    <h2>💳 Payments</h2>
+
+    <label>Amount (₹)</label>
+    <input id="payAmount" type="number" placeholder="Enter amount">
+
+    <label>Payment Mode</label>
+    <select id="payMode">
+        <option value="UPI">UPI</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Debit Card">Debit Card</option>
+        <option value="Net Banking">Net Banking</option>
+    </select>
+
+    <button onclick="makePayment()">Pay Securely</button>
+
+    <h3>Payment History</h3>
+    <div id="payHistory"></div>
 </div>
 
 <script>
-const pages = document.querySelectorAll(".page");
-const navLinks = document.querySelectorAll("nav a");
+/* Sidebar */
+const sidebar = document.getElementById("sidebar");
+document.getElementById("menuBtn").onclick = () => {
+    sidebar.style.left = sidebar.style.left === "0px" ? "-250px" : "0px";
+};
 
-navLinks.forEach(a => a.onclick = () => showPage(a.dataset.page));
-
-function showPage(page) {
-  pages.forEach(p => p.style.display = p.id === page ? "" : "none");
-  navLinks.forEach(a => a.classList.toggle("active", a.dataset.page === page));
+/* Login System */
+if (!localStorage.getItem("loggedIn")) {
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("username", "User123");
 }
 
-// Theme toggle
-const themeToggle = document.getElementById("themeToggle");
-
-// Working theme toggle
-themeToggle.onclick = () => {
-    document.body.classList.toggle("light");
-    document.querySelector("nav").classList.toggle("light");
-    document.querySelector("main").classList.toggle("light");
-
-    // Save theme preference
-    if (document.body.classList.contains("light")) {
-        localStorage.setItem("theme_mode", "light");
-    } else {
-        localStorage.removeItem("theme_mode");
+/* Page Navigation */
+function openPage(p) {
+    if (!localStorage.getItem("loggedIn")) {
+        showPopup("Please login first!");
+        return;
     }
-};
 
-// Apply saved theme on load
-if (localStorage.getItem("theme_mode") === "light") {
-    document.body.classList.add("light");
-    document.querySelector("nav").classList.add("light");
-    document.querySelector("main").classList.add("light");
-};
+    document.querySelectorAll('.page').forEach(pg => pg.style.display = "none");
+    document.getElementById(p).style.display = "block";
 
-
-
-// EV Tips
-const tips = [
-  "Charge between 20–80% for best battery health.",
-  "Avoid charging in extreme heat.",
-  "Use scheduled charging during off-peak hours.",
-  "Keep your EV software up to date."
-];
-setInterval(() => {
-  tipText.textContent = tips[Math.floor(Math.random() * tips.length)];
-}, 3000);
-
-// Register
-regForm.onsubmit = e => {
-  e.preventDefault();
-  let user = {
-    name: regForm.name.value,
-    email: regForm.email.value,
-    password: regForm.password.value,
-    vehicle: regForm.vehicle.value
-  };
-  localStorage.setItem("ez_user", JSON.stringify(user));
-  regMsg.textContent = "Account created!";
-  setTimeout(() => showPage("login"), 800);
-};
-
-// Login
-loginBtn.onclick = () => {
-  let user = JSON.parse(localStorage.getItem("ez_user") || "null");
-
-  if (user && user.email === logEmail.value && user.password === logPass.value) {
-    localStorage.setItem("ez_logged", "yes");
-    enableAccount();
-    loginMsg.textContent = "Login Successful!";
-    setTimeout(() => showPage("account"), 800);
-  } else {
-    loginMsg.textContent = "Invalid Email or Password!";
-  }
-};
-
-// Enable/disable account features
-function enableAccount() {
-  profilePic.disabled = false;
-  reqCharge.disabled = false;
-  logoutBtn.disabled = false;
-  loadAccount();
-}
-function disableAccount() {
-  profilePic.disabled = true;
-  reqCharge.disabled = true;
-  logoutBtn.disabled = true;
-  acctInfo.textContent = "Please login first";
+    if (p === "account") loadAccount();
+    if (p === "feedback") loadFeedback();
+    if (p === "payment") loadPayments();
 }
 
-// Load account details
+/* Theme Toggle */
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+}
+
+/* Popup */
+function showPopup(msg) {
+    const p = document.getElementById("popup");
+    p.innerText = msg;
+    p.style.opacity = 1;
+    setTimeout(() => p.style.opacity = 0, 2000);
+}
+
+/* Logout */
+function logout() {
+    localStorage.removeItem("loggedIn");
+    showPopup("Logged out!");
+}
+
+/* Account */
 function loadAccount() {
-  let u = JSON.parse(localStorage.getItem("ez_user") || "{}");
-  acctInfo.innerHTML = `
-    <b>Name:</b> ${u.name} <br>
-    <b>Email:</b> ${u.email} <br>
-    <b>Vehicle:</b> ${u.vehicle}
-  `;
-  pointsCount.textContent = localStorage.getItem("ez_points") || 0;
-  loadHistory();
+    const name = localStorage.getItem("username");
+    document.getElementById("accData").innerHTML =
+        `<div class="payment-card">
+            <p><b>Name:</b> ${name}</p>
+            <p><b>Location:</b> Hyderabad</p>
+            <p><b>Bookings:</b> 5</p>
+        </div>`;
 }
 
-// Charging request
-reqCharge.onclick = () => {
-  let history = JSON.parse(localStorage.getItem("ez_hist") || "[]");
-  history.push({ time: new Date().toLocaleString() });
-  localStorage.setItem("ez_hist", JSON.stringify(history));
+/* Feedback */
+function saveFeedback() {
+    let txt = document.getElementById("fbText").value;
+    if (txt.length < 1) return;
 
-  reqMsg.textContent = "Charging request submitted!";
+    let fb = JSON.parse(localStorage.getItem("fb")) || [];
+    fb.push(txt);
+    localStorage.setItem("fb", JSON.stringify(fb));
 
-  let points = Number(localStorage.getItem("ez_points") || 0) + 10;
-  localStorage.setItem("ez_points", points);
-  pointsCount.textContent = points;
-
-  loadHistory();
-};
-
-// Load history
-function loadHistory() {
-  let list = JSON.parse(localStorage.getItem("ez_hist") || "[]");
-  historyList.innerHTML = list
-    .map(i => `<div class="history-item">Requested at: ${i.time}</div>`)
-    .join("");
+    document.getElementById("fbText").value = "";
+    loadFeedback();
 }
 
-// Logout
-logoutBtn.onclick = () => {
-  localStorage.removeItem("ez_logged");
-  disableAccount();
-  showPage("login");
-};
-
-// Load login state on startup
-if (localStorage.getItem("ez_logged") === "yes") {
-  enableAccount();
-} else {
-  disableAccount();
-}
-
-// Feedback submit
-fbSubmit.onclick = () => {
-  let text = fbText.value.trim();
-  if (text.length < 3) {
-    fbMsg.textContent = "Feedback too short!";
-    return;
-  }
-
-  let all = JSON.parse(localStorage.getItem("ez_feedback") || "[]");
-  all.push({ text, time: new Date().toLocaleString() });
-
-  localStorage.setItem("ez_feedback", JSON.stringify(all));
-
-  fbMsg.textContent = "Feedback submitted!";
-  fbText.value = "";
-  loadFeedback();
-};
-
-// Load feedback
 function loadFeedback() {
-  let all = JSON.parse(localStorage.getItem("ez_feedback") || "[]");
-  fbList.innerHTML = all
-    .map(f => `<div class="feedback-item"><b>${f.time}</b><br>${f.text}</div>`)
-    .join("");
+    let fb = JSON.parse(localStorage.getItem("fb")) || [];
+    let html = "";
+    fb.forEach((f, i) => {
+        html += `<div class='payment-card'>
+                    ${f}
+                    <button onclick="delFB(${i})">Delete</button>
+                 </div>`;
+    });
+    document.getElementById("fbList").innerHTML = html;
 }
-loadFeedback();
+
+function delFB(i) {
+    let fb = JSON.parse(localStorage.getItem("fb")) || [];
+    fb.splice(i, 1);
+    localStorage.setItem("fb", JSON.stringify(fb));
+    loadFeedback();
+}
+
+/* Payments */
+function makePayment() {
+    let amt = document.getElementById("payAmount").value;
+    let mode = document.getElementById("payMode").value;
+
+    if (amt <= 0) {
+        showPopup("Enter a valid amount!");
+        return;
+    }
+
+    let history = JSON.parse(localStorage.getItem("pay")) || [];
+
+    history.push({
+        amount: amt,
+        mode: mode,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("pay", JSON.stringify(history));
+
+    showPopup("Payment Successful!");
+    loadPayments();
+}
+
+function loadPayments() {
+    let history = JSON.parse(localStorage.getItem("pay")) || [];
+    let html = "";
+    history.forEach(p => {
+        html += `<div class="payment-card">
+                    <p><b>Amount:</b> ₹${p.amount}</p>
+                    <p><b>Mode:</b> ${p.mode}</p>
+                    <p><b>Date:</b> ${p.date}</p>
+                </div>`;
+    });
+    document.getElementById("payHistory").innerHTML = html;
+}
+
+/* Default Page */
+openPage('home');
 </script>
 
 </body>
 </html>
+
+
 
 
 

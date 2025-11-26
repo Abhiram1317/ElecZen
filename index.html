@@ -18,14 +18,8 @@ body {
 body.light { background: #e8faff; color: #002029; }
 
 #app { display: flex; height: 100%; }
-.page.light {
-    color: #001f2a;
-}
-
-.card.light {
-    background: rgba(0, 150, 150, 0.1);
-}
-
+.page.light { color: #001f2a; }
+.card.light { background: rgba(0, 150, 150, 0.1); }
 
 nav {
   width: 260px;
@@ -36,6 +30,7 @@ nav {
   gap: 15px;
   box-shadow: 0 0 20px #00ffe5 inset;
   transition: 0.3s;
+  z-index: 10;
 }
 nav.light { background: #c6f7ff; }
 
@@ -121,15 +116,70 @@ button:disabled {
   margin: 5px;
   background: rgba(255,255,255,0.05);
   border-radius: 8px;
+  position: relative;
+}
+
+/* -------------------------------
+   📱 MOBILE RESPONSIVE STYLING
+--------------------------------*/
+@media (max-width: 900px) {
+
+  /* App becomes vertical */
+  #app {
+    flex-direction: column;
+  }
+
+  /* Hide sidebar by default */
+  nav {
+    position: absolute;
+    left: -270px;
+    top: 0;
+    height: 100%;
+    transition: 0.4s;
+  }
+
+  /* When open */
+  nav.open {
+    left: 0;
+  }
+
+  /* Hamburger button */
+  #menuBtn {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: #00ffe0;
+    padding: 10px 13px;
+    border-radius: 8px;
+    z-index: 20;
+    box-shadow: 0 0 10px #00ffe0;
+    font-size: 22px;
+    border: none;
+  }
+
+  /* Push main content down */
+  main {
+    padding-top: 70px;
+  }
+}
+
+/* Desktop hide hamburger */
+#menuBtn {
+  display: none;
 }
 </style>
 </head>
 
 <body>
+
+<!-- MOBILE MENU BUTTON -->
+<button id="menuBtn">☰</button>
+
 <div id="app">
 
 <!-- SIDEBAR -->
-<nav>
+<nav id="sideMenu">
   <div class="logo">
     <img src="ElecZen.jpg">
     <span style="font-size:20px;font-weight:700;">ElecZen</span>
@@ -146,6 +196,7 @@ button:disabled {
 </nav>
 
 <main>
+
 
 <!-- HOME -->
 <section id="home" class="page">
@@ -413,5 +464,6 @@ loadFeedback();
 
 </body>
 </html>
+
 
 

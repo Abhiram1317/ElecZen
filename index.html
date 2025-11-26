@@ -3,333 +3,432 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ElecZen</title>
+<title>ElecZen — EV Charging App</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        transition: 0.3s;
-    }
+body {
+  margin: 0;
+  background: #0c0c1a;
+  color: #e0f7ff;
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  transition: 0.3s;
+}
+body.light { background: #e8faff; color: #002029; }
 
-    /* Dark Mode */
-    body.dark {
-        background: #111;
-        color: white;
-    }
+#app { display: flex; height: 100%; }
 
-    /* Header */
-    header {
-        background: #4A90E2;
-        color: white;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 20px;
-    }
+.page.light { color: #001f2a; }
+.card.light { background: rgba(0, 150, 150, 0.1); }
 
-    /* Mobile Menu */
-    #menuBtn {
-        font-size: 26px;
-        cursor: pointer;
-    }
+/* Sidebar Navigation */
+nav {
+  width: 260px;
+  background: #0b0b1f;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 0 20px #00ffe5 inset;
+  transition: 0.3s;
+}
+nav.light { background: #c6f7ff; }
 
-    /* Sidebar */
-    #sidebar {
-        width: 250px;
-        background: #222;
-        color: white;
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: -250px;
-        padding-top: 60px;
-        transition: 0.3s;
-        z-index: 10;
-    }
+nav .logo img {
+  width: 55px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #00ffe0;
+}
+nav .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    #sidebar a {
-        display: block;
-        padding: 15px;
-        color: white;
-        text-decoration: none;
-        border-bottom: 1px solid #444;
-    }
+nav a {
+  color: #e0f7ff;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+nav a.active,
+nav a:hover {
+  background: #00ffe0;
+  color: #001f2a;
+  box-shadow: 0 0 12px #00ffe0;
+}
 
-    #sidebar a:hover {
-        background: #333;
-    }
+/* Main content */
+main {
+  flex: 1;
+  overflow: auto;
+  padding: 30px;
+}
 
-    /* Container */
-    .page {
-        padding: 20px;
-        display: none;
-    }
+/* Cards */
+.card {
+  background: rgba(0,255,224,0.06);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  box-shadow: 0 0 10px #00ffe0;
+  transition: 0.3s;
+}
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px #00ffe0;
+}
 
-    /* Inputs */
-    input, select, textarea, button {
-        width: 100%;
-        padding: 12px;
-        border-radius: 6px;
-        border: 1px solid #888;
-        margin-top: 10px;
-    }
+h2, h3 { color: #00ffe0; }
 
-    button {
-        background: #4A90E2;
-        color: white;
-        border: none;
-        font-size: 16px;
-    }
+/* Form elements */
+input, textarea, button, select {
+  padding: 10px;
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
 
-    button:disabled {
-        background: gray;
-    }
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    /* Popup Notification */
-    #popup {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        background: #4A90E2;
-        color: white;
-        padding: 15px;
-        border-radius: 6px;
-        opacity: 0;
-        transition: 0.4s;
-    }
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-    /* Payment Card */
-    .payment-card {
-        padding: 15px;
-        border-radius: 8px;
-        background: #f1f1f1;
-        margin-top: 10px;
-    }
+.btn-primary {
+  background: linear-gradient(90deg, #00ffe0, #00bfff);
+  color: #001f2a;
+  box-shadow: 0 0 10px #00ffe0;
+}
 
-    body.dark .payment-card {
-        background: #222;
-    }
+/* Feedback Box */
+.feedback-item {
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px 0;
+}
 
+/* Mobile layout */
+@media(max-width: 768px) {
+  #app { flex-direction: column; }
+  nav { width: 100%; flex-direction: row; overflow-x: auto; }
+  nav a { flex: 1; text-align: center; padding: 8px; }
+}
 </style>
 </head>
+
 <body>
+<div id="app">
 
-<header>
-    <strong>⚡ ElecZen</strong>
-    <span id="menuBtn">☰</span>
-</header>
+<!-- SIDEBAR -->
+<nav>
+  <div class="logo">
+    <img src="ElecZen.jpg">
+    <span style="font-size:20px;font-weight:700;">ElecZen</span>
+  </div>
 
-<!-- Sidebar -->
-<div id="sidebar">
-    <a onclick="openPage('home')">🏠 Home</a>
-    <a onclick="openPage('account')">👤 Account</a>
-    <a onclick="openPage('feedback')">✉ Feedback</a>
-    <a onclick="openPage('payment')">💳 Payments</a>
-    <a onclick="toggleTheme()">🌗 Theme</a>
-    <a onclick="logout()">🚪 Logout</a>
-</div>
+  <button id="themeToggle" class="btn-primary">Toggle Theme</button>
 
-<!-- Popup -->
-<div id="popup"></div>
+  <a data-page="home" class="active">🏠 Home</a>
+  <a data-page="register">📝 Register</a>
+  <a data-page="login">🔐 Login</a>
+  <a data-page="account">👤 Account</a>
+  <a data-page="payments">💳 Payments</a>
+  <a data-page="history">📘 Booking History</a>
+  <a data-page="feedback">💬 Feedback</a>
+</nav>
 
-<!-- Home -->
-<div id="home" class="page">
-    <h2>Welcome to ElecZen ⚡</h2>
-    <p>The future of EV charging at your fingertips.</p>
+<main>
 
+<!-- HOME PAGE -->
+<section id="home" class="page">
+  <div class="card">
+    <h2>Welcome to ElecZen</h2>
+    <p>The fastest mobile EV charging service in Hyderabad.</p>
+  </div>
+
+  <div class="card">
     <h3>About Us</h3>
-    <p>
-        ElecZen provides seamless EV charging management with 
-        an easy-to-use mobile interface. We combine innovation, speed,
-        and smart automation to deliver a smooth charging experience.
-        Track bookings, make payments, send feedback, and manage your
-        EV lifestyle — all in one place.
-    </p>
-
-    <h4>Why Choose ElecZen?</h4>
+    <p>ElecZen is Hyderabad’s most advanced EV mobile charging service.</p>
     <ul>
-        <li>Fast & Reliable Charging Management</li>
-        <li>Secure Payments</li>
-        <li>24/7 Support</li>
-        <li>User-friendly Interface</li>
-        <li>Developed for EV Owners</li>
+      <li>⚡ 24/7 Mobile Charging Vans</li>
+      <li>📍 Real-time Location Dispatch</li>
+      <li>🔐 Secure Cloud Login</li>
+      <li>🎁 Rewards for Every Booking</li>
     </ul>
-</div>
+  </div>
 
-<!-- Account -->
-<div id="account" class="page">
-    <h2>Your Account</h2>
+  <div class="card">
+    <h3>Daily EV Tip</h3>
+    <p id="tipText">Loading...</p>
+  </div>
+</section>
 
-    <div id="accData"></div>
-</div>
+<!-- REGISTER -->
+<section id="register" class="page" style="display:none">
+  <div class="card">
+    <h2>Create Account</h2>
+    <form id="regForm">
+      <input name="name" placeholder="Full Name" required />
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Password" required />
+      <input name="vehicle" placeholder="Vehicle Model" required />
+      <button class="btn-primary">Register</button>
+    </form>
+    <div id="regMsg"></div>
+  </div>
+</section>
 
-<!-- Feedback -->
-<div id="feedback" class="page">
-    <h2>Feedback</h2>
+<!-- LOGIN -->
+<section id="login" class="page" style="display:none">
+  <div class="card">
+    <h2>Login</h2>
+    <input id="logEmail" placeholder="Email">
+    <input id="logPass" type="password" placeholder="Password">
+    <button class="btn-primary" id="loginBtn">Login</button>
+    <p id="loginMsg"></p>
+  </div>
+</section>
 
-    <textarea id="fbText" placeholder="Write something..."></textarea>
-    <button onclick="saveFeedback()">Send</button>
+<!-- ACCOUNT PAGE -->
+<section id="account" class="page" style="display:none">
+  <div class="card">
+    <h2>My Account</h2>
+    <div id="acctInfo">Please login first</div>
 
-    <h3>Previous Feedback</h3>
-    <div id="fbList"></div>
-</div>
+    <h3>Charging Request</h3>
+    <button class="btn-primary" id="reqCharge" disabled>Request Charging</button>
+    <p id="reqMsg"></p>
 
-<!-- Payments Page -->
-<div id="payment" class="page">
-    <h2>💳 Payments</h2>
+    <h3>Reward Points</h3>
+    <p>Total: <span id="pointsCount">0</span></p>
 
-    <label>Amount (₹)</label>
-    <input id="payAmount" type="number" placeholder="Enter amount">
+    <button class="btn-primary" id="logoutBtn" disabled>Logout</button>
+  </div>
+</section>
 
-    <label>Payment Mode</label>
-    <select id="payMode">
-        <option value="UPI">UPI</option>
-        <option value="Credit Card">Credit Card</option>
-        <option value="Debit Card">Debit Card</option>
-        <option value="Net Banking">Net Banking</option>
+<!-- PAYMENTS PAGE -->
+<section id="payments" class="page" style="display:none">
+  <div class="card">
+    <h2>Payments</h2>
+    <p>Select a payment method to complete your charging request.</p>
+
+    <select id="payMethod">
+      <option value="UPI">UPI</option>
+      <option value="Card">Credit / Debit Card</option>
+      <option value="Wallet">Wallet</option>
+      <option value="COD">Cash on Delivery</option>
+      <option value="Subscription">Monthly Subscription</option>
     </select>
 
-    <button onclick="makePayment()">Pay Securely</button>
+    <input id="payAmount" type="number" placeholder="Enter Amount (₹)" />
 
+    <button class="btn-primary" id="payBtn">Pay Now</button>
+    <p id="payMsg"></p>
+  </div>
+
+  <div class="card">
     <h3>Payment History</h3>
     <div id="payHistory"></div>
+  </div>
+</section>
+
+<!-- BOOKING HISTORY -->
+<section id="history" class="page" style="display:none">
+  <div class="card">
+    <h2>Booking History</h2>
+    <div id="historyList"></div>
+  </div>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback" class="page" style="display:none">
+  <div class="card">
+    <h2>Feedback</h2>
+    <textarea id="fbText" rows="4" placeholder="Type feedback..."></textarea>
+    <button class="btn-primary" id="fbSubmit">Submit</button>
+    <p id="fbMsg"></p>
+  </div>
+
+  <div class="card">
+    <h3>Previous Feedback</h3>
+    <div id="fbList"></div>
+  </div>
+</section>
+
+</main>
 </div>
 
 <script>
-/* Sidebar */
-const sidebar = document.getElementById("sidebar");
-document.getElementById("menuBtn").onclick = () => {
-    sidebar.style.left = sidebar.style.left === "0px" ? "-250px" : "0px";
+/* PAGE SYSTEM */
+const pages = document.querySelectorAll(".page");
+const menu = document.querySelectorAll("nav a");
+
+menu.forEach(a => a.onclick = () => show(a.dataset.page));
+
+function show(page) {
+  pages.forEach(p => p.style.display = p.id === page ? "" : "none");
+  menu.forEach(a => a.classList.toggle("active", a.dataset.page === page));
+}
+
+/* THEME */
+themeToggle.onclick = () => document.body.classList.toggle("light");
+
+/* EV TIPS */
+const tips = [
+  "Charge between 20–80% for battery life.",
+  "Avoid fast-charging daily.",
+  "Park in shade while charging.",
+];
+setInterval(() =>
+  tipText.textContent = tips[Math.floor(Math.random() * tips.length)]
+, 3000);
+
+/* REGISTER */
+regForm.onsubmit = e => {
+  e.preventDefault();
+  let u = {
+    name: regForm.name.value,
+    email: regForm.email.value,
+    password: regForm.password.value,
+    vehicle: regForm.vehicle.value
+  };
+  localStorage.setItem("user", JSON.stringify(u));
+  regMsg.textContent = "Registered! Login now.";
+  show("login");
 };
 
-/* Login System */
-if (!localStorage.getItem("loggedIn")) {
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("username", "User123");
+/* LOGIN */
+loginBtn.onclick = () => {
+  let u = JSON.parse(localStorage.getItem("user") || "null");
+  if (!u || u.email !== logEmail.value || u.password !== logPass.value)
+    return loginMsg.textContent = "Invalid Credentials!";
+
+  localStorage.setItem("logged", "yes");
+  loginMsg.textContent = "Success!";
+  enableAccount();
+  setTimeout(() => show("account"), 800);
+};
+
+/* ACCOUNT SYSTEM */
+function enableAccount() {
+  reqCharge.disabled = false;
+  logoutBtn.disabled = false;
+  loadAcc();
+}
+function disableAccount() {
+  reqCharge.disabled = true;
+  logoutBtn.disabled = true;
 }
 
-/* Page Navigation */
-function openPage(p) {
-    if (!localStorage.getItem("loggedIn")) {
-        showPopup("Please login first!");
-        return;
-    }
-
-    document.querySelectorAll('.page').forEach(pg => pg.style.display = "none");
-    document.getElementById(p).style.display = "block";
-
-    if (p === "account") loadAccount();
-    if (p === "feedback") loadFeedback();
-    if (p === "payment") loadPayments();
+function loadAcc() {
+  let u = JSON.parse(localStorage.getItem("user"));
+  acctInfo.innerHTML = `
+    <b>Name:</b> ${u.name}<br>
+    <b>Email:</b> ${u.email}<br>
+    <b>Vehicle:</b> ${u.vehicle}
+  `;
+  pointsCount.textContent = localStorage.getItem("points") || 0;
 }
 
-/* Theme Toggle */
-function toggleTheme() {
-    document.body.classList.toggle("dark");
+/* CHARGING REQUEST */
+reqCharge.onclick = () => {
+  let history = JSON.parse(localStorage.getItem("bookings") || "[]");
+  history.push({ time: new Date().toLocaleString() });
+  localStorage.setItem("bookings", JSON.stringify(history));
+  reqMsg.textContent = "Request Sent!";
+  loadHistory();
+};
+
+/* PAYMENT SYSTEM */
+payBtn.onclick = () => {
+  let method = payMethod.value;
+  let amount = Number(payAmount.value);
+
+  if (amount <= 0)
+    return payMsg.textContent = "Enter a valid amount.";
+
+  let payments = JSON.parse(localStorage.getItem("payments") || "[]");
+  payments.push({
+    method,
+    amount,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("payments", JSON.stringify(payments));
+
+  payMsg.textContent = "Payment Successful!";
+  loadPayHistory();
+};
+
+function loadPayHistory() {
+  let payments = JSON.parse(localStorage.getItem("payments") || "[]");
+  payHistory.innerHTML = payments
+    .map(p => `
+      <div class="feedback-item">
+        ₹${p.amount} — ${p.method}<br>
+        <small>${p.time}</small>
+      </div>
+    `)
+    .join("");
 }
+loadPayHistory();
 
-/* Popup */
-function showPopup(msg) {
-    const p = document.getElementById("popup");
-    p.innerText = msg;
-    p.style.opacity = 1;
-    setTimeout(() => p.style.opacity = 0, 2000);
+/* HISTORY */
+function loadHistory() {
+  let h = JSON.parse(localStorage.getItem("bookings") || "[]");
+  historyList.innerHTML = h.map(i =>
+    `<div class="feedback-item">Requested at: ${i.time}</div>`
+  ).join("");
 }
+loadHistory();
 
-/* Logout */
-function logout() {
-    localStorage.removeItem("loggedIn");
-    showPopup("Logged out!");
-}
+/* LOGOUT */
+logoutBtn.onclick = () => {
+  localStorage.removeItem("logged");
+  disableAccount();
+  show("login");
+};
 
-/* Account */
-function loadAccount() {
-    const name = localStorage.getItem("username");
-    document.getElementById("accData").innerHTML =
-        `<div class="payment-card">
-            <p><b>Name:</b> ${name}</p>
-            <p><b>Location:</b> Hyderabad</p>
-            <p><b>Bookings:</b> 5</p>
-        </div>`;
-}
-
-/* Feedback */
-function saveFeedback() {
-    let txt = document.getElementById("fbText").value;
-    if (txt.length < 1) return;
-
-    let fb = JSON.parse(localStorage.getItem("fb")) || [];
-    fb.push(txt);
-    localStorage.setItem("fb", JSON.stringify(fb));
-
-    document.getElementById("fbText").value = "";
-    loadFeedback();
-}
+/* FEEDBACK */
+fbSubmit.onclick = () => {
+  let t = fbText.value.trim();
+  if (t.length < 3) return fbMsg.textContent = "Too short!";
+  let f = JSON.parse(localStorage.getItem("feedback") || "[]");
+  f.push({ text: t, time: new Date().toLocaleString() });
+  localStorage.setItem("feedback", JSON.stringify(f));
+  fbMsg.textContent = "Submitted!";
+  fbText.value = "";
+  loadFeedback();
+};
 
 function loadFeedback() {
-    let fb = JSON.parse(localStorage.getItem("fb")) || [];
-    let html = "";
-    fb.forEach((f, i) => {
-        html += `<div class='payment-card'>
-                    ${f}
-                    <button onclick="delFB(${i})">Delete</button>
-                 </div>`;
-    });
-    document.getElementById("fbList").innerHTML = html;
+  let f = JSON.parse(localStorage.getItem("feedback") || "[]");
+  fbList.innerHTML = f.map(x =>
+    `<div class="feedback-item"><b>${x.time}</b><br>${x.text}</div>`
+  ).join("");
 }
+loadFeedback();
 
-function delFB(i) {
-    let fb = JSON.parse(localStorage.getItem("fb")) || [];
-    fb.splice(i, 1);
-    localStorage.setItem("fb", JSON.stringify(fb));
-    loadFeedback();
-}
-
-/* Payments */
-function makePayment() {
-    let amt = document.getElementById("payAmount").value;
-    let mode = document.getElementById("payMode").value;
-
-    if (amt <= 0) {
-        showPopup("Enter a valid amount!");
-        return;
-    }
-
-    let history = JSON.parse(localStorage.getItem("pay")) || [];
-
-    history.push({
-        amount: amt,
-        mode: mode,
-        date: new Date().toLocaleString()
-    });
-
-    localStorage.setItem("pay", JSON.stringify(history));
-
-    showPopup("Payment Successful!");
-    loadPayments();
-}
-
-function loadPayments() {
-    let history = JSON.parse(localStorage.getItem("pay")) || [];
-    let html = "";
-    history.forEach(p => {
-        html += `<div class="payment-card">
-                    <p><b>Amount:</b> ₹${p.amount}</p>
-                    <p><b>Mode:</b> ${p.mode}</p>
-                    <p><b>Date:</b> ${p.date}</p>
-                </div>`;
-    });
-    document.getElementById("payHistory").innerHTML = html;
-}
-
-/* Default Page */
-openPage('home');
+/* AUTO LOGIN */
+if (localStorage.getItem("logged") === "yes") enableAccount();
+else disableAccount();
 </script>
 
 </body>
 </html>
+
+
 
 
 
